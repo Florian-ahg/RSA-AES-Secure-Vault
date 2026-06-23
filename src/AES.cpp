@@ -110,13 +110,15 @@ void AES::subWord(unsigned char* word)
 std::vector<unsigned char> AES::encrypt(const std::vector<unsigned char>& message)
 {
     std::vector<unsigned char> result;
+    std::vector<unsigned char> padded = message;
 
-    if (message.size() % 16 != 0)
-        throw std::invalid_argument("Message size must be a multiple of 16 bytes");
+    // Stream mode: if the last block is smaller than 128 bits, pad it with zeros
+    if (padded.size() % 16 != 0)
+        padded.resize(padded.size() + (16 - padded.size() % 16), 0);
 
-    for (size_t i = 0; i < message.size(); i += 16) {
+    for (size_t i = 0; i < padded.size(); i += 16) {
         unsigned char block[16];
-        std::memcpy(block, &message[i], 16);
+        std::memcpy(block, &padded[i], 16);
         encryptBlock(block);
         result.insert(result.end(), block, block + 16);
     }

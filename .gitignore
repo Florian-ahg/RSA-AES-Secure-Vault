@@ -1,0 +1,18 @@
+# Compiled binary
+my_pgp
+
+# Object files
+*.o
+*.obj
+
+# Temporary / test artifacts
+ciphered
+ciphered_data
+message
+*_cipher
+
+# Editor / OS files
+*.swp
+*~
+.DS_Store
+.vscode/

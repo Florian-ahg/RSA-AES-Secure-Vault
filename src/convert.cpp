@@ -120,24 +120,32 @@ namespace Convert
                                             const std::vector<unsigned char>& key,
                                             char mode)
     {
-        std::vector<unsigned char> processed_key = key;
-        reverse_endian_blocks(processed_key);
-        
-        std::vector<unsigned char> processed_input = input;
-        if (mode == 'd') {
-            reverse_endian_blocks(processed_input);
-        }
+        try
+        {
+            std::vector<unsigned char> processed_key = key;
+            reverse_endian_blocks(processed_key);
 
-        AES aes_cipher(processed_key);
-        std::vector<unsigned char> output;
-        
-        if (mode == 'c') {
-            output = aes_cipher.encrypt(processed_input);
-            reverse_endian_blocks(output);
-        } else {
-            output = aes_cipher.decrypt(processed_input);
+            std::vector<unsigned char> processed_input = input;
+            if (mode == 'd') {
+                reverse_endian_blocks(processed_input);
+            }
+
+            AES aes_cipher(processed_key);
+            std::vector<unsigned char> output;
+
+            if (mode == 'c') {
+                output = aes_cipher.encrypt(processed_input);
+                reverse_endian_blocks(output);
+            } else {
+                output = aes_cipher.decrypt(processed_input);
+            }
+            return output;
         }
-        return output;
+        catch (const std::invalid_argument &e)
+        {
+            std::cerr << "Error (AES): " << e.what() << std::endl;
+            std::exit(84);
+        }
     }
 
 }
